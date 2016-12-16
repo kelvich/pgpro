@@ -110,17 +110,13 @@ if [ "$1" = 'postgres' ]; then
 		done
 
 		# Some tweaks to default configuration
-		file_env 'POSTGRES_SYNC_COMMIT' 'off'
-		file_env 'POSTGRES_SHARED_BUFFERS' '2GB'
-		file_env 'POSTGRES_MAX_WAL_SIZE' '4GB'
-		file_env 'POSTGRES_EXTRA_CONF' ''
 		cat <<-CONF >> $PGDATA/postgresql.conf
+
 			listen_addresses = '*'
 			shared_preload_libraries='pg_pathman'
-			synchronous_commit = $POSTGRES_SYNC_COMMIT
-			shared_buffers = '$POSTGRES_SHARED_BUFFERS'
-			max_wal_size = '$POSTGRES_MAX_WAL_SIZE'
-			$POSTGRES_EXTRA_CONF
+			synchronous_commit = off
+			shared_buffers = '2GB'
+			max_wal_size = '4GB'
 		CONF
 
 		su-exec postgres pg_ctl -D "$PGDATA" -m fast -w stop
